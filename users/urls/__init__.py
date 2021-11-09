@@ -6,8 +6,8 @@ from users import app
 def app_version():
     return jsonify({
         'data': {
-            'name': 'app',
-            'version': '1.0.0',
+            'name': app.config.get('APP_NAME'),
+            'version': app.config.get('APP_VERSION'),
         },
         'code': 200
     }), 200
