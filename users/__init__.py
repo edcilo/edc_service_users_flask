@@ -4,5 +4,6 @@ from flask_cors import CORS
 app = Flask(__name__)
 CORS(app)
 
+import users.commands
 import users.urls
 
