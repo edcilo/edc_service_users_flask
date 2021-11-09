@@ -1,0 +1,14 @@
+version: '3.9'
+
+
+services:
+  ms_flask_users:
+    container_name: ms_flask_users
+    build: .
+    ports:
+    - 5000:5000
+    volumes:
+    - ./:/app
+    environment:
+    - FLASK_ENV=development
+
