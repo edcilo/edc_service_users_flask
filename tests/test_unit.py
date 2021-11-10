@@ -1,4 +1,5 @@
 from fixture import app, client
+from users.db import db
 from users.models import User
 
 
@@ -33,3 +34,15 @@ def test_user_model_setpassword(client):
 def test_user_model_repr(client):
     user = User({'email': 'jhon.doe@example.com'})
     assert str(user) == '<User None jhon.doe@example.com>'
+
+def test_user_save(client):
+    data = {
+        'username': 'jhon.doe',
+        'email': 'jhon.doe@example.com',
+        'phone': '1231231231',}
+    user = User(data)
+    user.set_password('secret')
+    assert user.id is None
+    db.session.add(user)
+    db.session.commit()
+    assert user.id is not None
