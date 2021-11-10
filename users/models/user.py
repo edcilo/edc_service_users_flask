@@ -20,8 +20,8 @@ class User(db.Model):
     lastname = db.Column(db.String(50), nullable=True)
     is_active = db.Column(db.Boolean, default=False, nullable=False)
     created_at = db.Column(
-        db.DateTime, 
-        default=datetime.datetime.utcnow, 
+        db.DateTime,
+        default=datetime.datetime.utcnow,
         nullable=False)
     updated_at = db.Column(
         db.DateTime,
@@ -30,7 +30,7 @@ class User(db.Model):
     deleted_at = db.Column(db.DateTime, nullable=True)
 
     def __init__(self, data: dict) -> None:
-        self.setAttrs(data) 
+        self.setAttrs(data)
 
     def __repr__(self) -> str:
         return f'<User {self.id} {self.email}>'
@@ -40,4 +40,3 @@ class User(db.Model):
 
     def verify_password(self, password: str) -> bool:
         return check_password_hash(self.password, password)
-

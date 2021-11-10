@@ -29,4 +29,3 @@ config = {
 
 app.config.update(**config.get('app'))
 app.config.update(**config.get('db'))
-

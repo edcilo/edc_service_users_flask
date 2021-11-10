@@ -8,4 +8,3 @@ class Model(BaseModel):
 
     def update(self, data: dict) -> None:
         self.setAttrs(data)
-

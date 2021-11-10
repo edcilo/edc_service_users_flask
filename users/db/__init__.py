@@ -6,4 +6,3 @@ from users.models import Model
 
 db = SQLAlchemy(app, model_class=Model)
 migrate = Migrate(app, db)
-
