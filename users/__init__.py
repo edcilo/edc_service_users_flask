@@ -7,4 +7,5 @@ CORS(app)
 import users.config
 import users.commands
 import users.urls
+import users.models
 

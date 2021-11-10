@@ -11,3 +11,4 @@ def app_version():
         },
         'code': 200
     }), 200
+
