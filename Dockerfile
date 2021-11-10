@@ -7,8 +7,8 @@ ENV FLASK_ENV=production
 RUN apk update \
     && apk add --no-cache \
         build-base \
-	postgresql-dev \
-	python3-dev
+		postgresql-dev \
+		python3-dev
 
 WORKDIR /app
 
