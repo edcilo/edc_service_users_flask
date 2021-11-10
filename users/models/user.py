@@ -27,7 +27,9 @@ class User(db.Model):
         db.DateTime,
         default=datetime.datetime.utcnow,
         nullable=False)
-    deleted_at = db.Column(db.DateTime, nullable=True)
+    deleted_at = db.Column(db.DateTime, default=None, nullable=True)
+
+    _fillable = ('username', 'email', 'phone', 'name', 'lastname')
 
     def __init__(self, data: dict) -> None:
         self.setAttrs(data)
@@ -35,8 +37,12 @@ class User(db.Model):
     def __repr__(self) -> str:
         return f'<User {self.id} {self.email}>'
 
-    def get_fullname(self) -> str:
+    @property
+    def fullname(self) -> str:
         return f'{self.name} {self.lastname}'
+
+    def set_password(self, password: str) -> None:
+        self.password = generate_password_hash(password)
 
     def verify_password(self, password: str) -> bool:
         return check_password_hash(self.password, password)
