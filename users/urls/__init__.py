@@ -1,8 +1,9 @@
 from flask import jsonify
 from users import app
+from .user import *
 
 
-@app.route('/')
+@app.route('/about')
 def app_version():
     return jsonify({
         'data': {
