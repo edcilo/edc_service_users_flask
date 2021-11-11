@@ -6,8 +6,8 @@ from .repository import Repository
 
 
 class UserRepository(Repository):
-    def __init__(self):
-        self._model = User
+    def get_model(self):
+        return User
 
     def add(self, data: dict) -> User:
         user = self._model(data)
