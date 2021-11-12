@@ -42,6 +42,5 @@ class FormRequest():
         return self.form.validate()
 
     @abc.abstractmethod
-    def rules(self, request) -> dict: 
+    def rules(self, request) -> dict:
         pass
-

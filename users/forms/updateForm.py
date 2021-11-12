@@ -26,44 +26,18 @@ class UpdateForm(FormRequest):
                 DataRequired(),
                 Email(),
                 Length(max=255),
-                Unique(User, except_id=user_id), 
+                Unique(User, except_id=user_id),
             ]),
             'phone': StringField('phone', validators=[
                 DataRequired(),
                 Length(min=9, max=15),
                 Regexp(phone_regex, message='The phone is invalid'),
-                Unique(User, except_id=user_id), 
+                Unique(User, except_id=user_id),
             ]),
             'name': StringField('name', validators=[
-                Length(max=50), 
+                Length(max=50),
             ]),
             'lastname': StringField('lastname', validators=[
-                Length(max=50), 
+                Length(max=50),
             ])
         }
-
-
-
-
-# class UpdateForm(BaseForm):
-#     class Meta:
-#         csrf = False
-
-
-#     username = StringField('username', validators=[
-#         DataRequired(),
-#         Length(min=4, max=60),
-#         Regexp(username_regex, message='The username is invalid'),
-#         Unique(User), ])
-#     email = StringField('email', validators=[
-#         DataRequired(),
-#         Email(),
-#         Length(max=255),
-#         Unique(User), ])
-#     phone = StringField('phone', validators=[
-#         DataRequired(),
-#         Length(min=9, max=15),
-#         Regexp('\d{9,15}$', message='The phone is invalid'),
-#         Unique(User), ])
-#     name = StringField('name', validators=[Length(max=50), ])
-#     lastname = StringField('lastname', validators=[Length(max=50), ])
