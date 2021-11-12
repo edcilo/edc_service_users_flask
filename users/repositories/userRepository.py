@@ -53,12 +53,12 @@ class UserRepository(Repository):
         return user
 
     def all(self, search: str = None,
-                order_column: str = 'id',
-                order: str = 'desc',
-                paginate: bool = False,
-                page: int = 1,
-                per_page: int = 15,
-                with_deleted: bool = False):
+            order_column: str = 'id',
+            order: str = 'desc',
+            paginate: bool = False,
+            page: int = 1,
+            per_page: int = 15,
+            with_deleted: bool = False):
         column = getattr(self._model, order_column)
         order_by = getattr(column, order)
         q = self._model.query
