@@ -1,5 +1,6 @@
 from flask import json
 from fixture import app, client
+from users.repositories import userRepo
 
 
 def test_index(client):
@@ -14,7 +15,13 @@ def test_user_list(client):
     assert res.status_code == 200
 
 def test_user_create(client):
-    res = client.post('/')
+    data = {
+        'username': 'jhon.doe',
+        'email': 'jhon.doe@example.com',
+        'phone': '1231231231',
+        'password': 'secret',
+    }
+    res = client.post('/', data=data)
     assert res.status_code == 200
 
 def test_user_detail(client):
@@ -22,7 +29,19 @@ def test_user_detail(client):
     assert res.status_code == 200
 
 def test_user_update(client):
-    res = client.put('/1')
+    data = {
+        'username': 'jhon.doe',
+        'email': 'jhon.doe@example.com',
+        'phone': '1231231231',
+        'password': 'secret',
+    }
+    user = userRepo.add(data)
+    new_data = {
+        'username': 'jhon.doe',
+        'email': 'jhon.doe.00@example.com',
+        'phone': '1231231231',
+    }
+    res = client.put(f'/{user.id}', data=new_data)
     assert res.status_code == 200
 
 def test_user_delete(client):
