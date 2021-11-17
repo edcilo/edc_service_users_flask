@@ -13,4 +13,3 @@ class UserSerializer(Serializer):
         'created_at': str,
         'deleted_at': str,
     }
-

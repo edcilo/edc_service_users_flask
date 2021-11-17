@@ -29,7 +29,7 @@ class FormRequest():
     @property
     def errors(self):
         return None if self.form is None else self.form.errors
-    
+
     @property
     def data(self):
         data = dict()

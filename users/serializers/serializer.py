@@ -4,7 +4,7 @@ from users.db import db
 class Serializer:
     response: dict[str, str] = dict()
 
-    def __init__(self, model: db.Model, collection: bool = False, 
+    def __init__(self, model: db.Model, collection: bool = False,
                  paginate: bool = False) -> None:
         self.__data = None
         self.__original = model
@@ -43,4 +43,3 @@ class Serializer:
         for attr, type in self.response.items():
             data[attr] = type(getattr(model, attr, None))
         return data
-
