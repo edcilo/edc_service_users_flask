@@ -17,11 +17,9 @@ class Unique():
     def __call__(self, form, field) -> None:
         column = self.column or field.name
         message = self.message or f'The {field.data} has already been taken'
-        print('?????>>>', self.except_id)
         filters = [getattr(self.model, column) == field.data]
         if self.except_id is not None:
             filters.append(self.model.id != self.except_id)
         exists = self.model.query.filter(*filters).count()
-        print(exists)
         if exists:
             raise ValidationError(message)
