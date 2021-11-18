@@ -1,5 +1,7 @@
 # Get all users paginated
 
+host='http://localhost:5000'
+
 curl -si -X GET \
-'http://localhost:5000/'
+"${host}/"
 

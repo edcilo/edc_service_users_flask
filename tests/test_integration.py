@@ -22,10 +22,17 @@ def test_user_create(client):
         'password': 'secret',
     }
     res = client.post('/', data=data)
-    assert res.status_code == 200
+    assert res.status_code == 201
 
 def test_user_detail(client):
-    res = client.get('/1')
+    data = {
+        'username': 'jhon.doe',
+        'email': 'jhon.doe@example.com',
+        'phone': '1231231231',
+        'password': 'secret',
+    }
+    user = userRepo.add(data)
+    res = client.get(f'/{user.id}')
     assert res.status_code == 200
 
 def test_user_update(client):
@@ -45,5 +52,13 @@ def test_user_update(client):
     assert res.status_code == 200
 
 def test_user_delete(client):
-    res = client.delete('/1')
-    assert res.status_code == 200
+    data = {
+        'username': 'jhon.doe',
+        'email': 'jhon.doe@example.com',
+        'phone': '1231231231',
+        'password': 'secret',
+    }
+    user = userRepo.add(data)
+    res = client.delete(f'/{user.id}')
+    assert res.status_code == 204
+
