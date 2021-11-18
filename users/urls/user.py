@@ -25,4 +25,3 @@ def update(id):
 @app.route('/<id>', methods=['DELETE'])
 def delete(id):
     return userController.delete(id)
-

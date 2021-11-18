@@ -22,8 +22,14 @@ class UserController():
 
     @form_validator(CreateForm)
     def create(self, form: BaseForm) -> tuple[Response, int]:
-        data = userRepo.form_to_dict(form.data,
-            ('email', 'username', 'phone', 'password', 'name', 'lastname'))
+        data = userRepo.form_to_dict(
+            form.data,
+            ('email',
+             'username',
+             'phone',
+             'password',
+             'name',
+             'lastname'))
         user = userRepo.add(data)
         serializer = UserSerializer(user)
         return jsonify(serializer.get_data()), 201
@@ -35,8 +41,8 @@ class UserController():
 
     @form_validator(UpdateForm)
     def update(self, id: uuid, form: BaseForm) -> tuple[Response, int]:
-        data = userRepo.form_to_dict(form.data,
-            ('email', 'username', 'phone', 'name', 'lastname'))
+        data = userRepo.form_to_dict(
+            form.data, ('email', 'username', 'phone', 'name', 'lastname'))
         user = userRepo.update(id, data, fail=True)
         serializer = UserSerializer(user)
         return jsonify(serializer.get_data()), 200
@@ -44,4 +50,3 @@ class UserController():
     def delete(self, id: uuid) -> tuple[Response, int]:
         user = userRepo.delete(id, fail=True)
         return jsonify({}), 204
-

@@ -88,16 +88,16 @@ def test_user_repor_find_optional(client):
         'email': 'jhon.doe@example.com'})
     assert isinstance(user_found, User)
     assert user_found.email == 'jhon.doe@example.com'
-    
+
 def test_user_repo_getall(client):
     user = userRepo.add({
         'username': 'jhon.doe',
         'email': 'jhon.doe@example.com',
         'phone': '1231231231',
         'password': 'secret', })
-    users = userRepo.all() 
+    users = userRepo.all()
     assert isinstance(users, list)
-    assert len(users) == 1 
+    assert len(users) == 1
 
 def test_user_repo_update(client):
     user = userRepo.add({
@@ -106,7 +106,7 @@ def test_user_repo_update(client):
         'phone': '1231231231',
         'password': 'secret', })
     user_updated = userRepo.update(user.id, {'phone': '3213213213'})
-    assert user_updated.phone == '3213213213'    
+    assert user_updated.phone == '3213213213'
 
 def test_user_repo_delete(client):
     user = userRepo.add({
@@ -117,3 +117,4 @@ def test_user_repo_delete(client):
     userRepo.delete(user.id)
     user = userRepo.find(user.id)
     assert user is None
+
