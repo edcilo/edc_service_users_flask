@@ -1,4 +1,5 @@
 from .form import BaseForm
 from .createForm import CreateForm
-from .updateForm import UpdateForm
 from .paginateForm import PaginateForm
+from .registerForm import RegisterForm
+from .updateForm import UpdateForm

@@ -1,8 +1,9 @@
+from typing import Type, Any
 from users.db import db
 
 
 class Serializer:
-    response: dict[str, str] = dict()
+    response: dict[str, Type] = dict()
 
     def __init__(self, model: db.Model, collection: bool = False,
                  paginate: bool = False) -> None:
@@ -31,14 +32,14 @@ class Serializer:
             data = {'data': data, 'pagination': pagination_data}
         self.__data = data
 
-    def handler_collection(self, collection) -> None:
+    def handler_collection(self, collection) -> list[dict]:
         res = list()
         for model in collection:
             data = self.serialize(model)
             res.append(data)
         return res
 
-    def serialize(self, model) -> None:
+    def serialize(self, model) -> dict[str, Any]:
         data = {}
         for attr, type in self.response.items():
             data[attr] = type(getattr(model, attr, None))

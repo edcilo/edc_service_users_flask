@@ -1,6 +1,5 @@
 import datetime
 import uuid
-from sqlalchemy.dialects.postgresql import UUID
 from werkzeug.security import generate_password_hash, check_password_hash
 from users.db import db
 

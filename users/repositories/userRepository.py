@@ -1,3 +1,4 @@
+from typing import Any
 from sqlalchemy import or_
 from users.models import User
 
@@ -22,7 +23,7 @@ class UserRepository(Repository):
 
     def find(self, id: str, fail: bool = False,
              with_deleted: bool = False) -> User:
-        filters = {'id': id}
+        filters: dict[str, Any] = {'id': id}
         if not with_deleted:
             filters['deleted_at'] = None
         q = self._model.query.filter_by(**filters)

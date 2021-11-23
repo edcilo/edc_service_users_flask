@@ -62,3 +62,22 @@ def test_user_delete(client):
     res = client.delete(f'/{user.id}')
     assert res.status_code == 204
 
+def test_register(client):
+    data = {
+        'username': 'jhon.doe',
+        'email': 'jhon.doe@example.com',
+        'phone': '1231231231',
+        'password': 'secret',
+        'password_confirmation': 'secret'
+    }
+    res = client.post('/register', data=data)
+    assert res.status_code == 200
+
+def test_login(client):
+    data = {
+        'username': 'jhon.doe',
+        'email': 'jhon.doe@example.com',
+        'password': 'secret',
+    }
+    res = client.post('/login', data=data)
+    assert res.status_code == 200

@@ -1,5 +1,6 @@
 from flask import jsonify
 from users import app
+from .auth import *
 from .user import *
 
 
