@@ -77,7 +77,28 @@ def test_login(client):
     data = {
         'username': 'jhon.doe',
         'email': 'jhon.doe@example.com',
+        'phone': '1231231231',
+        'password': 'secret',
+    }
+    userRepo.add(data)
+    data = {
+        'username': 'jhon.doe',
         'password': 'secret',
     }
     res = client.post('/login', data=data)
     assert res.status_code == 200
+
+def test_bad_credentials(client):
+    data = {
+        'username': 'jhon.doe',
+        'email': 'jhon.doe@example.com',
+        'phone': '1231231231',
+        'password': 'secret',
+    }
+    userRepo.add(data)
+    data = {
+        'username': 'jhon.doe',
+        'password': 'secre'
+    }
+    res = client.post('/login', data=data)
+    assert res.status_code == 400

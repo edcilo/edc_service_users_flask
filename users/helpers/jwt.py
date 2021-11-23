@@ -1,5 +1,5 @@
 import jwt
-from typing import Union
+from typing import Any, Union
 from users import app
 from users.helpers.time import epoch_now
 
@@ -25,7 +25,7 @@ class JwtHelper():
         payload = jwt.decode(token, self.key, algorithms=self.algorithms)
         return payload
 
-    def get_tokens(self, payload: dict) -> dict[str, str]:
+    def get_tokens(self, payload: dict) -> dict[str, Any]:
         token = self.encode(payload, self.token_lifetime)
         refresh_token = self.encode(payload, self.refresh_token_lifetime)
         return {

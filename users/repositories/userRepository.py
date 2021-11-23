@@ -49,7 +49,7 @@ class UserRepository(Repository):
         q = self._model.query.filter(or_(*filters))
         if not with_deleted:
             q = q.filter_by(deleted_at=None)
-        user = q.first_or_404 if fail else q.first()
+        user = q.first_or_404() if fail else q.first()
         return user
 
     def all(self, search: str = None,
