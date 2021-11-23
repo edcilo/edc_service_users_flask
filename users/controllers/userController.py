@@ -1,5 +1,5 @@
-import uuid
-from flask import jsonify, Response
+from flask import Response, jsonify
+
 from users.decorators import form_validator
 from users.forms import BaseForm, CreateForm, PaginateForm, UpdateForm
 from users.repositories import userRepo
@@ -22,31 +22,23 @@ class UserController():
 
     @form_validator(CreateForm)
     def create(self, form: BaseForm) -> tuple[Response, int]:
-        data = userRepo.form_to_dict(
-            form.data,
-            ('email',
-             'username',
-             'phone',
-             'password',
-             'name',
-             'lastname'))
-        user = userRepo.add(data)
+        user = userRepo.add(form.data)
         serializer = UserSerializer(user)
         return jsonify(serializer.get_data()), 201
 
-    def detail(self, id: uuid) -> tuple[Response, int]:
+    def detail(self, id: str) -> tuple[Response, int]:
         user = userRepo.find(id, fail=True)
         serializer = UserSerializer(user)
         return jsonify(serializer.get_data()), 200
 
     @form_validator(UpdateForm)
-    def update(self, id: uuid, form: BaseForm) -> tuple[Response, int]:
+    def update(self, id: str, form: BaseForm) -> tuple[Response, int]:
         data = userRepo.form_to_dict(
             form.data, ('email', 'username', 'phone', 'name', 'lastname'))
         user = userRepo.update(id, data, fail=True)
         serializer = UserSerializer(user)
         return jsonify(serializer.get_data()), 200
 
-    def delete(self, id: uuid) -> tuple[Response, int]:
-        user = userRepo.delete(id, fail=True)
+    def delete(self, id: str) -> tuple[Response, int]:
+        userRepo.delete(id, fail=True)
         return jsonify({}), 204

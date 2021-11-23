@@ -1,12 +1,11 @@
-import uuid
 from sqlalchemy import or_
-from users.db import db
 from users.models import User
+
 from .repository import Repository
 
 
 class UserRepository(Repository):
-    def get_model(self):
+    def get_model(self) -> User:
         return User
 
     def add(self, data: dict) -> User:
@@ -16,12 +15,12 @@ class UserRepository(Repository):
         self.db_save(user)
         return user
 
-    def delete(self, id: uuid, fail: bool = False) -> User:
+    def delete(self, id: str, fail: bool = False) -> User:
         user = self.find(id, fail=fail, with_deleted=True)
         self.db_delete(user)
         return user
 
-    def find(self, id: uuid, fail: bool = False,
+    def find(self, id: str, fail: bool = False,
              with_deleted: bool = False) -> User:
         filters = {'id': id}
         if not with_deleted:
@@ -63,16 +62,16 @@ class UserRepository(Repository):
         order_by = getattr(column, order)
         q = self._model.query
         if search is not None:
-            q = q.filter(or_(self.model.username.like(f'%{search}%'),
-                             self.model.email.like(f'%{search}%'),
-                             self.model.phone.like(f'%{search}%')))
+            q = q.filter(or_(self._model.username.like(f'%{search}%'),
+                             self._model.email.like(f'%{search}%'),
+                             self._model.phone.like(f'%{search}%')))
         if not with_deleted:
             q = q.filter_by(deleted_at=None)
         q = q.order_by(order_by())
         users = q.paginate(page, per_page=per_page) if paginate else q.all()
         return users
 
-    def update(self, id: uuid, data: dict, fail: bool = False) -> User:
+    def update(self, id: str, data: dict, fail: bool = False) -> User:
         user = self.find(id, fail=fail)
         user.update(data)
         self.db_save(user)
