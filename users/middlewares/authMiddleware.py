@@ -18,5 +18,5 @@ class AuthMiddleware(MiddlewareBase):
 
         payload = jwtHelper.decode(auth)
         payload['user'] = userRepo.find(payload['id'], fail=True)
-        print(payload)
 
+        setattr(request, 'auth', payload)

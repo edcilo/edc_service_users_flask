@@ -1,10 +1,10 @@
-from flask import Response, jsonify
+from flask import Response, jsonify, request
 
 from users.decorators import form_validator
 from users.forms import LoginForm, RegisterForm
 from users.helpers.jwt import jwtHelper
 from users.repositories import userRepo
-from users.serializers import JwtSerializer
+from users.serializers import JwtSerializer, serializer
 
 
 class AuthController():
@@ -33,4 +33,7 @@ class AuthController():
         return jsonify(token, 200)
 
     def refresh(self) -> tuple[Response, int]:
-        return jsonify({}), 200
+        user = request.auth.get('user')
+        serializer = JwtSerializer(user)
+        token = jwtHelper.get_tokens(serializer.get_data())
+        return jsonify(token), 200
