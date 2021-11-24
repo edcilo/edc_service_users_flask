@@ -102,3 +102,18 @@ def test_bad_credentials(client):
     }
     res = client.post('/login', data=data)
     assert res.status_code == 400
+
+def test_refresh_token(client):
+    data = {
+        'username': 'jhon.doe',
+        'email': 'jhon.doe@example.com',
+        'phone': '1231231231',
+        'password': 'secret',
+    }
+    userRepo.add(data)
+    loginres = client.post('/login', data=data)
+    data = json.loads(loginres.data)
+    token = data.get('token')
+    headers = {'Authorization': f'Bearer {token}'}
+    res = client.post('/refresh', headers=headers)
+    assert res.status_code == 200

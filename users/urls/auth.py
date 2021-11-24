@@ -1,5 +1,6 @@
 from users import app
 from users.controllers import authController
+from users.middlewares import middleware, AuthMiddleware
 
 
 @app.route('/login', methods=['POST'])
@@ -10,3 +11,7 @@ def login():
 def register():
     return authController.register()
 
+@app.route('/refresh', methods=['POST'])
+@middleware(AuthMiddleware)
+def refresh():
+    return authController.refresh()

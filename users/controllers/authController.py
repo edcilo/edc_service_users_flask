@@ -31,3 +31,6 @@ class AuthController():
         serializer = JwtSerializer(user)
         token = jwtHelper.get_tokens(serializer.get_data())
         return jsonify(token, 200)
+
+    def refresh(self) -> tuple[Response, int]:
+        return jsonify({}), 200
