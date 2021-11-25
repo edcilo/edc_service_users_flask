@@ -45,4 +45,3 @@ class JwtHelper():
 
 
 jwtHelper = JwtHelper()
-

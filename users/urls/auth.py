@@ -7,9 +7,11 @@ from users.middlewares import middleware, AuthMiddleware
 def login():
     return authController.login()
 
+
 @app.route('/register', methods=['POST'])
 def register():
     return authController.register()
+
 
 @app.route('/refresh', methods=['POST'])
 @middleware(AuthMiddleware)
