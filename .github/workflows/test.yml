@@ -33,5 +33,5 @@ jobs:
         run: coverage run -m pytest
 
       - name: Show coverage report
-        run: coverage report
+        run: coverage report -m
 
