@@ -1,10 +1,10 @@
 import abc
-from typing import Any
+from typing import Any, Type, Union
 from flask_wtf import FlaskForm
 from flask import Request
 
 
-def strip_filter(value):
+def strip_filter(value: Union[str, None]) -> Union[str, None]:
     if value is not None and hasattr(value, 'strip'):
         return value.strip()
     return value
@@ -19,14 +19,14 @@ class BaseForm(FlaskForm):
 
 
 class FormRequest():
-    def __init__(self, data: dict, request: Request) -> None:
+    def __init__(self, data: dict[str, Any], request: Type[Request]) -> None:
         self.request_data = data
         self.request = request
         self.attrs = list()
         self.form = self.initialize()
 
     @property
-    def errors(self):
+    def errors(self) -> Union[dict[str, Any], None]:
         return None if self.form is None else self.form.errors
 
     @property
@@ -36,7 +36,7 @@ class FormRequest():
             data[attr] = getattr(self.form, attr).data
         return data
 
-    def initialize(self):
+    def initialize(self) -> BaseForm:
         class Form(BaseForm):
             pass
 
@@ -48,9 +48,9 @@ class FormRequest():
 
         return Form(data=self.request_data, meta={'csrf': False})
 
-    def validate(self):
+    def validate(self) -> None:
         return self.form.validate()
 
     @abc.abstractmethod
-    def rules(self, request) -> dict:
+    def rules(self, request: Type[Request]) -> dict[str, Any]:
         pass
