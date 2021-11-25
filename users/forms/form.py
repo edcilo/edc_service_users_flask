@@ -1,8 +1,6 @@
 import abc
 from flask_wtf import FlaskForm
 from flask import Request
-from wtforms import StringField
-from wtforms.validators import DataRequired
 
 
 def strip_filter(value):
@@ -21,24 +19,35 @@ class BaseForm(FlaskForm):
 
 class FormRequest():
     def __init__(self, data: dict, request: Request) -> None:
-        self.data = data
+        self.request_data = data
         self.request = request
-        self.form = None
+        self.attrs = list()
+        self.form = self.initialize()
 
     @property
     def errors(self):
         return None if self.form is None else self.form.errors
 
-    def validate(self):
+    @property
+    def data(self):
+        data = dict()
+        for attr in self.attrs:
+            data[attr] = getattr(self.form, attr).data
+        return data
+
+    def initialize(self):
         class Form(BaseForm):
             pass
 
         rules = self.rules(self.request)
 
-        for col, rule in rules.items():
-            setattr(Form, col, rule)
+        for attr, rule in rules.items():
+            setattr(Form, attr, rule)
+            self.attrs.append(attr)
 
-        self.form = Form(data=self.data, meta={'csrf': False})
+        return Form(data=self.request_data, meta={'csrf': False})
+
+    def validate(self):
         return self.form.validate()
 
     @abc.abstractmethod

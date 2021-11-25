@@ -1,4 +1,4 @@
-name: tests
+name: testing
 
 on:
   push:
@@ -13,25 +13,25 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      APP_SECRET_KEY: secret-key
+      APP_SECRET_KEY: my-secret-key
 
     steps:
       - uses: actions/checkout@v2
 
-      - name: Docker - build image
-        run: docker build -t msusers .
+      - uses: actions/setup-python@v2
+        with:
+          python-version: '3.9'
+          cache: 'pip'
 
-      - name: Docker - run container
-        run: docker run --name msusers -e APP_SECRET_KEY=$APP_SECRET_KEY -d msusers
+      - name: Install dependencies
+        run: pip install -r requirements.txt
 
-      - name: Docker - run tests
-        run: docker exec msusers coverage run -m pytest
+      - name: Install application
+        run: pip install -e .
 
-      - name: Docker - coverage
-        run: docker exec msusers coverage report
+      - name: Run testing
+        run: coverage run -m pytest
 
-      - name: Docker - stop container
-        run: docker stop msusers
+      - name: Show coverage report
+        run: coverage report -m
 
-      - name: Docker - remove container
-        run: docker rm msusers

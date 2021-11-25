@@ -9,7 +9,6 @@ def form_validator(FormClass, method=None):
             data = request.args.to_dict() if method == 'GET' else request.form
             form = FormClass(data=data, request=request)
             if not form.validate():
-                print('????', form.errors)
                 return jsonify({'errors': form.errors}), 400
             kwargs['form'] = form
             return func(*args, **kwargs)
