@@ -1,5 +1,6 @@
 import datetime
 import uuid
+from typing import Any
 from werkzeug.security import generate_password_hash, check_password_hash
 from users.db import db
 
@@ -30,7 +31,7 @@ class User(db.Model):
 
     _fillable = ('username', 'email', 'phone', 'name', 'lastname')
 
-    def __init__(self, data: dict) -> None:
+    def __init__(self, data: dict[str, Any]) -> None:
         self.setAttrs(data)
 
     def __repr__(self) -> str:

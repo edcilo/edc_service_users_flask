@@ -1,7 +1,7 @@
-from typing import Any
+from typing import Any, Iterable, Optional, Union
 from sqlalchemy import or_
+from flask_sqlalchemy import Pagination
 from users.models import User
-
 from .repository import Repository
 
 
@@ -9,7 +9,7 @@ class UserRepository(Repository):
     def get_model(self) -> User:
         return User
 
-    def add(self, data: dict) -> User:
+    def add(self, data: dict[str, Any]) -> User:
         user = self._model(data)
         if 'password' in data:
             user.set_password(data['password'])
@@ -39,7 +39,7 @@ class UserRepository(Repository):
         user = q.first_or_404() if fail else q.first()
         return user
 
-    def find_optional(self, filter: dict, fail: bool = False,
+    def find_optional(self, filter: dict[str, Any], fail: bool = False,
                       with_deleted: bool = False) -> User:
         filters = [
             getattr(
@@ -52,13 +52,13 @@ class UserRepository(Repository):
         user = q.first_or_404() if fail else q.first()
         return user
 
-    def all(self, search: str = None,
+    def all(self, search: Optional[str] = None,
             order_column: str = 'id',
             order: str = 'desc',
             paginate: bool = False,
             page: int = 1,
             per_page: int = 15,
-            with_deleted: bool = False):
+            with_deleted: bool = False) -> Union[list, Pagination]:
         column = getattr(self._model, order_column)
         order_by = getattr(column, order)
         q = self._model.query
@@ -72,7 +72,7 @@ class UserRepository(Repository):
         users = q.paginate(page, per_page=per_page) if paginate else q.all()
         return users
 
-    def update(self, id: str, data: dict, fail: bool = False) -> User:
+    def update(self, id: str, data: dict[str, Any], fail: bool = False) -> User:
         user = self.find(id, fail=fail)
         user.update(data)
         self.db_save(user)
