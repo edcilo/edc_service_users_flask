@@ -1,5 +1,5 @@
 import abc
-from typing import Any, Type, Union
+from typing import Any, Callable, Type, Union
 from flask_wtf import FlaskForm
 from flask import Request
 
@@ -52,5 +52,5 @@ class FormRequest():
         return self.form.validate()
 
     @abc.abstractmethod
-    def rules(self, request: Type[Request]) -> dict[str, Any]:
+    def rules(self, request: Type[Request]) -> dict[str, Callable]:
         pass
