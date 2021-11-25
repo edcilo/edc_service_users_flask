@@ -5,7 +5,7 @@ from datetime import datetime, timezone
 utc = timezone.utc
 
 
-def now():
+def now() -> datetime:
     return datetime.now(tz=utc)
 
 
