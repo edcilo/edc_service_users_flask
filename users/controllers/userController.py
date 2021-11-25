@@ -1,14 +1,17 @@
-from flask import Response, jsonify
+from typing import Type
+from flask import jsonify
 
 from users.decorators import form_validator
-from users.forms import BaseForm, CreateForm, PaginateForm, UpdateForm
+from users.forms import CreateForm, PaginateForm, UpdateForm
+from users.forms.form import FormRequest
+from users.helpers.types import response as responseType
 from users.repositories import userRepo
 from users.serializers import UserSerializer
 
 
 class UserController():
     @form_validator(PaginateForm, method='GET')
-    def list(self, form) -> tuple[Response, int]:
+    def list(self, form: Type[FormRequest]) -> responseType:
         params = {
             'paginate': True,
             'search': form.data['q'],
@@ -21,22 +24,22 @@ class UserController():
         return jsonify(serializer.get_data()), 200
 
     @form_validator(CreateForm)
-    def create(self, form: BaseForm) -> tuple[Response, int]:
+    def create(self, form: Type[FormRequest]) -> responseType:
         user = userRepo.add(form.data)
         serializer = UserSerializer(user)
         return jsonify(serializer.get_data()), 201
 
-    def detail(self, id: str) -> tuple[Response, int]:
+    def detail(self, id: str) -> responseType:
         user = userRepo.find(id, fail=True)
         serializer = UserSerializer(user)
         return jsonify(serializer.get_data()), 200
 
     @form_validator(UpdateForm)
-    def update(self, id: str, form: BaseForm) -> tuple[Response, int]:
+    def update(self, id: str, form: Type[FormRequest]) -> responseType:
         user = userRepo.update(id, form.data, fail=True)
         serializer = UserSerializer(user)
         return jsonify(serializer.get_data()), 200
 
-    def delete(self, id: str) -> tuple[Response, int]:
+    def delete(self, id: str) -> responseType:
         userRepo.delete(id, fail=True)
         return jsonify({}), 204

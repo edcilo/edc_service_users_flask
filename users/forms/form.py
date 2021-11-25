@@ -1,4 +1,5 @@
 import abc
+from typing import Any
 from flask_wtf import FlaskForm
 from flask import Request
 
@@ -29,7 +30,7 @@ class FormRequest():
         return None if self.form is None else self.form.errors
 
     @property
-    def data(self):
+    def data(self) -> dict[str, Any]:
         data = dict()
         for attr in self.attrs:
             data[attr] = getattr(self.form, attr).data
