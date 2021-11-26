@@ -80,6 +80,17 @@ def test_user_repo_update(client):
     user_updated = userRepo.update(user.id, {'phone': '3213213213'})
     assert user_updated.phone == '3213213213'
 
+def test_user_repo_soft_delete(client):
+    user = userRepo.add({
+        'username': 'jhon.doe',
+        'email': 'jhon.doe@example.com',
+        'phone': '1231231231',
+        'password': 'secret', })
+    user = userRepo.soft_delete(user.id)
+    assert user.deleted_at is not None
+    user = userRepo.soft_delete(user.id, clear=True)
+    assert user.deleted_at is None
+
 def test_user_repo_delete(client):
     user = userRepo.add({
         'username': 'jhon.doe',

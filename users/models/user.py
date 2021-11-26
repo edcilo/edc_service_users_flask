@@ -44,5 +44,9 @@ class User(db.Model):
     def set_password(self, password: str) -> None:
         self.password = generate_password_hash(password)
 
+    def soft_delete(self, clear: bool = False) -> None:
+        value = None if clear else datetime.datetime.utcnow()
+        self.deleted_at = value
+
     def verify_password(self, password: str) -> bool:
         return check_password_hash(self.password, password)
