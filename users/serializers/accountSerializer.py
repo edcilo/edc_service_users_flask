@@ -1,16 +1,13 @@
 from .serializer import Serializer
 
 
-class UserSerializer(Serializer):
+class AccountSerializer(Serializer):
     response = {
         'id': str,
-        'username': str,
+        'usernme': str,
         'email': str,
         'phone': str,
         'name': str,
         'lastname': str,
-        'is_active': bool,
-        'created_at': str,
-        'updated_at': str,
-        'deleted_at': str,
+        'is_active': str,
     }

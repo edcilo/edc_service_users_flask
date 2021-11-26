@@ -11,7 +11,6 @@ class UserRepository(Repository):
 
     def activate(self, id: str, fail: bool = False) -> User:
         user = self.find(id, fail)
-        print(user, user.is_active)
         if not user.is_active:
             user.is_active = True
             self.db_save(user)
@@ -25,7 +24,7 @@ class UserRepository(Repository):
         return user
 
     def all(self, search: Optional[str] = None,
-            order_column: str = 'id',
+            order_column: str = 'created_at',
             order: str = 'desc',
             paginate: bool = False,
             page: int = 1,
@@ -86,16 +85,34 @@ class UserRepository(Repository):
         user = q.first_or_404() if fail else q.first()
         return user
 
-    def soft_delete(self, id: str, clear: bool = False, fail: bool = False) -> User:
+    def soft_delete(
+            self,
+            id: str,
+            clear: bool = False,
+            fail: bool = False) -> User:
         user = self.find(id, fail=fail, with_deleted=clear)
         if (user.deleted_at is None and clear is False) \
-            or (user.deleted_at is not None and clear is True):
+                or (user.deleted_at is not None and clear is True):
             user.soft_delete(clear=clear)
             self.db_save(user)
         return user
 
-    def update(self, id: str, data: dict[str, Any], fail: bool = False) -> User:
+    def update(self,
+               id: str,
+               data: dict[str,
+                          Any],
+               fail: bool = False) -> User:
         user = self.find(id, fail=fail)
         user.update(data)
+        self.db_save(user)
+        return user
+
+    def update_password(
+            self,
+            id: str,
+            password: str,
+            fail: bool = False) -> User:
+        user = self.find(id, fail)
+        user.set_password(password)
         self.db_save(user)
         return user

@@ -31,7 +31,8 @@ class Serializer:
             data = {'data': data, 'pagination': pagination_data}
         return data
 
-    def handler_collection(self, collection: list[Model]) -> list[dict[str, Any]]:
+    def handler_collection(
+            self, collection: list[Model]) -> list[dict[str, Any]]:
         serialized = list()
         for model in collection:
             data = self.serialize(model)
@@ -41,5 +42,6 @@ class Serializer:
     def serialize(self, model: Type[Model]) -> dict[str, Any]:
         data = {}
         for attr, type in self.response.items():
-            data[attr] = type(getattr(model, attr, None))
+            value = getattr(model, attr, None)
+            data[attr] = value if value is None else type(value)
         return data

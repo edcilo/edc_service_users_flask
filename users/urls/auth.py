@@ -17,3 +17,9 @@ def register():
 @middleware(AuthMiddleware)
 def refresh():
     return authController.refresh()
+
+
+@app.route('/check', methods=['POST'])
+@middleware(AuthMiddleware)
+def check():
+    return authController.check()

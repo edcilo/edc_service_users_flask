@@ -4,7 +4,6 @@ from abc import ABC, abstractmethod
 from functools import wraps
 
 
-
 class MiddlewareBase(ABC):
     @abstractmethod
     def handler(self, request: Type[Request]) -> None:

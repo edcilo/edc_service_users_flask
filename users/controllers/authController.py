@@ -33,10 +33,13 @@ class AuthController():
         user = userRepo.add(form.data)
         serializer = JwtSerializer(user)
         token = jwtHelper.get_tokens(serializer.get_data())
-        return jsonify(token, 200)
+        return jsonify(token), 200
 
     def refresh(self) -> responseType:
         user = request.auth.get('user')
         serializer = JwtSerializer(user)
         token = jwtHelper.get_tokens(serializer.get_data())
         return jsonify(token), 200
+
+    def check(self) -> responseType:
+        return jsonify(), 204
