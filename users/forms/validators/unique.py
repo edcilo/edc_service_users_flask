@@ -1,13 +1,12 @@
-import uuid
-from typing import Union
+from typing import Type, Union
 from wtforms.validators import ValidationError
-from users.db import db
+from flask_sqlalchemy import Model
 
 
 class Unique():
-    def __init__(self, model: db.Model,
+    def __init__(self, model: Type[Model],
                  column: Union[str, None] = None,
-                 except_id: Union[int, None] = None,
+                 except_id: Union[int, str, None] = None,
                  message: Union[str, None] = None) -> None:
         self.model = model
         self.column = column

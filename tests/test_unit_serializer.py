@@ -11,7 +11,7 @@ def test_user_serializer(client):
         'password': 'secret'
     })
     serializer = UserSerializer(user)
-    assert tuple(serializer.get_data().keys()) == ('id', 'username', 'email', 'phone', 'name', 'lastname', 'is_active', 'created_at', 'deleted_at')
+    assert tuple(serializer.get_data().keys()) == ('id', 'username', 'email', 'phone', 'name', 'lastname', 'is_active', 'created_at', 'updated_at', 'deleted_at')
 
 def test_user_collection_serializer(client):
     user = userRepo.add({

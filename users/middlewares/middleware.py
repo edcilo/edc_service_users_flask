@@ -1,11 +1,12 @@
-from flask import request
+from typing import Type
+from flask import Request, request
 from abc import ABC, abstractmethod
 from functools import wraps
 
 
 class MiddlewareBase(ABC):
     @abstractmethod
-    def handler(self, request) -> None:
+    def handler(self, request: Type[Request]) -> None:
         pass
 
 

@@ -1,5 +1,6 @@
 import datetime
 import uuid
+from typing import Any
 from werkzeug.security import generate_password_hash, check_password_hash
 from users.db import db
 
@@ -30,7 +31,7 @@ class User(db.Model):
 
     _fillable = ('username', 'email', 'phone', 'name', 'lastname')
 
-    def __init__(self, data: dict) -> None:
+    def __init__(self, data: dict[str, Any]) -> None:
         self.setAttrs(data)
 
     def __repr__(self) -> str:
@@ -42,6 +43,10 @@ class User(db.Model):
 
     def set_password(self, password: str) -> None:
         self.password = generate_password_hash(password)
+
+    def soft_delete(self, clear: bool = False) -> None:
+        value = None if clear else datetime.datetime.utcnow()
+        self.deleted_at = value
 
     def verify_password(self, password: str) -> bool:
         return check_password_hash(self.password, password)

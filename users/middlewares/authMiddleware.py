@@ -1,11 +1,12 @@
-from flask import abort
+from typing import Type
+from flask import abort, Request
 from users.helpers.jwt import jwtHelper
 from users.repositories import userRepo
 from .middleware import MiddlewareBase
 
 
 class AuthMiddleware(MiddlewareBase):
-    def handler(self, request) -> None:
+    def handler(self, request: Type[Request]) -> None:
         auth = request.headers.get('Authorization')
 
         if not auth:

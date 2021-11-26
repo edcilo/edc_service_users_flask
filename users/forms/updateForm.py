@@ -1,3 +1,6 @@
+from typing import Any, Callable, Type
+
+from flask import Request
 from wtforms import StringField
 from wtforms.validators import (
     DataRequired,
@@ -6,13 +9,13 @@ from wtforms.validators import (
     Regexp
 )
 from users.models import User
-from users.helpers.regex import username_regex, phone_regex, password_regex
+from users.helpers.regex import username_regex, phone_regex
 from users.forms.validators.unique import Unique
 from .form import FormRequest
 
 
 class UpdateForm(FormRequest):
-    def rules(self, request) -> dict:
+    def rules(self, request: Type[Request]) -> dict[str, Callable]:
         user_id = request.view_args.get('id')
 
         return {

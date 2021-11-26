@@ -20,12 +20,12 @@ class JwtHelper():
         encoded = jwt.encode(payload, self.key, algorithm=self.algorithms)
         return encoded
 
-    def decode(self, token: str) -> dict:
+    def decode(self, token: str) -> dict[str, Any]:
         token = token.replace(self.token_type, '').strip()
         payload = jwt.decode(token, self.key, algorithms=self.algorithms)
         return payload
 
-    def get_tokens(self, payload: dict) -> dict[str, Any]:
+    def get_tokens(self, payload: dict[str, Any]) -> dict[str, str]:
         token = self.encode(payload, self.token_lifetime)
         refresh_token = self.encode(payload, self.refresh_token_lifetime)
         return {

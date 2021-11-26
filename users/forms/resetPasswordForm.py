@@ -4,37 +4,24 @@ from flask import Request
 from wtforms import StringField
 from wtforms.validators import (
     DataRequired,
-    Email,
     EqualTo,
     Length,
     Regexp,
 )
-from users.models import User
-from users.helpers.regex import username_regex, phone_regex, password_regex
-from users.forms.validators.unique import Unique
+from users.helpers.regex import password_regex
+from users.repositories import userRepo
 from .form import FormRequest
+from .validators.passwordConfirmation import PasswordConfirmation
 
 
-class RegisterForm(FormRequest):
+class ResetPasswordForm(FormRequest):
     def rules(self, request: Type[Request]) -> dict[str, Callable]:
+        user_id = request.view_args.get('id')
+        user = userRepo.find(user_id)
         return {
-            'username': StringField('username', validators=[
+            'current_password': StringField('current_password', validators=[
                 DataRequired(),
-                Length(min=4, max=60),
-                Regexp(username_regex, message='The username is invalid'),
-                Unique(User),
-            ]),
-            'email': StringField('emai', validators=[
-                DataRequired(),
-                Email(),
-                Length(max=255),
-                Unique(User),
-            ]),
-            'phone': StringField('phone', validators=[
-                DataRequired(),
-                Length(min=9, max=15),
-                Regexp(phone_regex, message='The phone is invalid'),
-                Unique(User),
+                PasswordConfirmation(user)
             ]),
             'password': StringField('password', validators=[
                 DataRequired(),
