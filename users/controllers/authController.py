@@ -29,7 +29,7 @@ class AuthController():
         return jsonify(token), 200
 
     @form_validator(RegisterForm)
-    def register(self, form) -> responseType:
+    def register(self, form: Type[FormRequest]) -> responseType:
         user = userRepo.add(form.data)
         serializer = JwtSerializer(user)
         token = jwtHelper.get_tokens(serializer.get_data())

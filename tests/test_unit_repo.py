@@ -11,6 +11,20 @@ def test_user_repo_add(client):
         'password': 'secret', })
     assert isinstance(user, User)
     assert user.id is not None
+    assert user.password is not None
+
+def test_user_repo_activate_and_deactivate(client):
+    user = userRepo.add({
+        'username': 'jhon.doe',
+        'email': 'jhon.doe@example',
+        'phone': '1231231231',
+        'password': 'secret',
+    })
+    assert user.is_active == False
+    user = userRepo.activate(user.id, fail=True)
+    assert user.is_active == True
+    user = userRepo.deactivate(user.id, fail=True)
+    assert user.is_active == False
 
 def test_user_repo_find(client):
     user = userRepo.add({
@@ -24,16 +38,19 @@ def test_user_repo_find(client):
     assert user_not_found is None
 
 def test_user_repo_find_by_attr(client):
-    user = userRepo.add({
+    userRepo.add({
         'username': 'jhon.doe',
         'email': 'jhon.doe@example.com',
         'phone': '1231231231',
         'password': 'secret', })
     user_found = userRepo.find_by_attr('username', 'jhon.doe')
     assert isinstance(user_found, User)
+    userRepo.delete(user_found.id)
+    user_found = userRepo.find_by_attr('username', 'jhon.doe', with_deleted=True)
+    assert user_found is not None
 
 def test_user_repor_find_optional(client):
-    user = userRepo.add({
+    userRepo.add({
         'username': 'jhon.doe',
         'email': 'jhon.doe@example.com',
         'phone': '1231231231',
@@ -45,7 +62,7 @@ def test_user_repor_find_optional(client):
     assert user_found.email == 'jhon.doe@example.com'
 
 def test_user_repo_getall(client):
-    user = userRepo.add({
+    userRepo.add({
         'username': 'jhon.doe',
         'email': 'jhon.doe@example.com',
         'phone': '1231231231',

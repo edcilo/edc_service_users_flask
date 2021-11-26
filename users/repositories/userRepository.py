@@ -9,11 +9,45 @@ class UserRepository(Repository):
     def get_model(self) -> User:
         return User
 
+    def activate(self, id: str, fail: bool = False) -> User:
+        user = self.find(id, fail)
+        if not user.is_active:
+            user.is_active = True
+            self.db_save(user)
+        return user
+
     def add(self, data: dict[str, Any]) -> User:
         user = self._model(data)
         if 'password' in data:
             user.set_password(data['password'])
         self.db_save(user)
+        return user
+
+    def all(self, search: Optional[str] = None,
+            order_column: str = 'id',
+            order: str = 'desc',
+            paginate: bool = False,
+            page: int = 1,
+            per_page: int = 15,
+            with_deleted: bool = False) -> Union[list, Pagination]:
+        column = getattr(self._model, order_column)
+        order_by = getattr(column, order)
+        q = self._model.query
+        if search is not None:
+            q = q.filter(or_(self._model.username.like(f'%{search}%'),
+                             self._model.email.like(f'%{search}%'),
+                             self._model.phone.like(f'%{search}%')))
+        if not with_deleted:
+            q = q.filter_by(deleted_at=None)
+        q = q.order_by(order_by())
+        users = q.paginate(page, per_page=per_page) if paginate else q.all()
+        return users
+
+    def deactivate(self, id: str, fail: bool = False) -> User:
+        user = self.find(id, fail)
+        if user.is_active:
+            user.is_active = False
+            self.db_save(user)
         return user
 
     def delete(self, id: str, fail: bool = False) -> User:
@@ -51,26 +85,6 @@ class UserRepository(Repository):
             q = q.filter_by(deleted_at=None)
         user = q.first_or_404() if fail else q.first()
         return user
-
-    def all(self, search: Optional[str] = None,
-            order_column: str = 'id',
-            order: str = 'desc',
-            paginate: bool = False,
-            page: int = 1,
-            per_page: int = 15,
-            with_deleted: bool = False) -> Union[list, Pagination]:
-        column = getattr(self._model, order_column)
-        order_by = getattr(column, order)
-        q = self._model.query
-        if search is not None:
-            q = q.filter(or_(self._model.username.like(f'%{search}%'),
-                             self._model.email.like(f'%{search}%'),
-                             self._model.phone.like(f'%{search}%')))
-        if not with_deleted:
-            q = q.filter_by(deleted_at=None)
-        q = q.order_by(order_by())
-        users = q.paginate(page, per_page=per_page) if paginate else q.all()
-        return users
 
     def update(self, id: str, data: dict[str, Any], fail: bool = False) -> User:
         user = self.find(id, fail=fail)
