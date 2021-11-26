@@ -45,7 +45,7 @@ def test_user_repo_find_by_attr(client):
         'password': 'secret', })
     user_found = userRepo.find_by_attr('username', 'jhon.doe')
     assert isinstance(user_found, User)
-    userRepo.delete(user_found.id)
+    userRepo.soft_delete(user_found.id)
     user_found = userRepo.find_by_attr('username', 'jhon.doe', with_deleted=True)
     assert user_found is not None
 
@@ -70,6 +70,10 @@ def test_user_repo_getall(client):
     users = userRepo.all()
     assert isinstance(users, list)
     assert len(users) == 1
+    results = userRepo.all('jhon')
+    assert len(results) == 1
+    results = userRepo.all('foo')
+    assert len(results) == 0
 
 def test_user_repo_update(client):
     user = userRepo.add({
