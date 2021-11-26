@@ -6,7 +6,7 @@ from users.forms import CreateForm, PaginateForm, UpdateForm, UpdatePasswordForm
 from users.forms.form import FormRequest
 from users.helpers.types import response as responseType
 from users.repositories import userRepo
-from users.serializers import UserSerializer, serializer
+from users.serializers import UserSerializer
 
 
 class AdminController():

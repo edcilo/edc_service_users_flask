@@ -1,4 +1,3 @@
-from flask.json import jsonify
 from users import app
 from users.controllers import accountController
 from users.middlewares import middleware, AuthMiddleware

@@ -75,10 +75,9 @@ class UserRepository(Repository):
     def find_optional(self, filter: dict[str, Any], fail: bool = False,
                       with_deleted: bool = False) -> User:
         filters = [
-            getattr(
-                self._model,
-                key) == val for key,
-            val in filter.items()]
+            getattr(self._model, key) == val for key,
+            val in filter.items()
+        ]
         q = self._model.query.filter(or_(*filters))
         if not with_deleted:
             q = q.filter_by(deleted_at=None)
@@ -99,8 +98,7 @@ class UserRepository(Repository):
 
     def update(self,
                id: str,
-               data: dict[str,
-                          Any],
+               data: dict[str, Any],
                fail: bool = False) -> User:
         user = self.find(id, fail=fail)
         user.update(data)
