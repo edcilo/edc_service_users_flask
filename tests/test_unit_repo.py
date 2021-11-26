@@ -3,6 +3,10 @@ from users.models import User
 from users.repositories import userRepo
 
 
+def test_user_repo_get_model(client):
+    model = userRepo.get_model()
+    assert model == User
+
 def test_user_repo_add(client):
     user = userRepo.add({
         'username': 'jhon.doe',
