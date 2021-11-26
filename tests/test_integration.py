@@ -51,7 +51,30 @@ def test_user_update(client):
     res = client.put(f'/{user.id}', data=new_data)
     assert res.status_code == 200
 
-def test_user_delete(client):
+def test_user_activate(client):
+    data = {
+        'username': 'jhon.doe',
+        'email': 'jhon.doe@example.com',
+        'phone': '1231231231',
+        'password': 'secret',
+    }
+    user = userRepo.add(data)
+    res = client.post(f'/{user.id}/activate')
+    assert res.status_code == 204
+
+def test_user_deactivate(client):
+    data = {
+        'username': 'jhon.doe',
+        'email': 'jhon.doe@example.com',
+        'phone': '1231231231',
+        'password': 'secret',
+    }
+    user = userRepo.add(data)
+    userRepo.activate(user.id)
+    res = client.post(f'/{user.id}/deactivate')
+    assert res.status_code == 204
+
+def test_user_soft_delete(client):
     data = {
         'username': 'jhon.doe',
         'email': 'jhon.doe@example.com',
@@ -60,6 +83,28 @@ def test_user_delete(client):
     }
     user = userRepo.add(data)
     res = client.delete(f'/{user.id}')
+    assert res.status_code == 204
+
+def test_user_restore(client):
+    data = {
+        'username': 'jhon.doe',
+        'email': 'jhon.doe@example.com',
+        'phone': '1231231231',
+        'password': 'secret',
+    }
+    user = userRepo.add(data)
+    res = client.post(f'/{user.id}/restore')
+    assert res.status_code == 204
+
+def test_user_delete(client):
+    data = {
+        'username': 'jhon.doe',
+        'email': 'jhon.doe@example.com',
+        'phone': '1231231231',
+        'password': 'secret',
+    }
+    user = userRepo.add(data)
+    res = client.delete(f'/{user.id}/hard')
     assert res.status_code == 204
 
 def test_register(client):

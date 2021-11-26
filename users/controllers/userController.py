@@ -40,6 +40,22 @@ class UserController():
         serializer = UserSerializer(user)
         return jsonify(serializer.get_data()), 200
 
+    def activate(self, id: str) -> responseType:
+        userRepo.activate(id, fail=True)
+        return jsonify(), 204
+
+    def deactivate(self, id: str) -> responseType:
+        userRepo.deactivate(id, fail=True)
+        return jsonify(), 204
+
+    def soft_delete(self, id: str) -> responseType:
+        userRepo.soft_delete(id, fail=True)
+        return jsonify(), 204
+
+    def restore(self, id: str) -> responseType:
+        userRepo.soft_delete(id, clear=True, fail=True)
+        return jsonify(), 204
+
     def delete(self, id: str) -> responseType:
         userRepo.delete(id, fail=True)
         return jsonify({}), 204

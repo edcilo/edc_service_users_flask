@@ -11,6 +11,7 @@ class UserRepository(Repository):
 
     def activate(self, id: str, fail: bool = False) -> User:
         user = self.find(id, fail)
+        print(user, user.is_active)
         if not user.is_active:
             user.is_active = True
             self.db_save(user)
@@ -62,7 +63,6 @@ class UserRepository(Repository):
             filters['deleted_at'] = None
         q = self._model.query.filter_by(**filters)
         user = q.first_or_404() if fail else q.first()
-        user = q.first()
         return user
 
     def find_by_attr(self, column: str, value: str, fail: bool = False,
