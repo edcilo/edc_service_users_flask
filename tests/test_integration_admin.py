@@ -101,6 +101,7 @@ def test_user_restore(client):
         'password': 'secret',
     }
     user = userRepo.add(data)
+    userRepo.soft_delete(user.id)
     res = client.post(f'/admin/{user.id}/restore')
     assert res.status_code == 204
 
@@ -112,6 +113,7 @@ def test_user_delete(client):
         'password': 'secret',
     }
     user = userRepo.add(data)
+    userRepo.soft_delete(user.id)
     res = client.delete(f'/admin/{user.id}/hard')
     assert res.status_code == 204
 

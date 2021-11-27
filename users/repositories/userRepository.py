@@ -9,6 +9,11 @@ class UserRepository(Repository):
     def get_model(self) -> User:
         return User
 
+    def deleted_filter(self, q, deleted: bool):
+        if deleted:
+            return q.filter(self._model.deleted_at != None)
+        return q.filter(self._model.deleted_at == None)
+
     def activate(self, id: str, fail: bool = False) -> User:
         user = self.find(id, fail)
         if not user.is_active:
@@ -29,7 +34,7 @@ class UserRepository(Repository):
             paginate: bool = False,
             page: int = 1,
             per_page: int = 15,
-            with_deleted: bool = False) -> Union[list, Pagination]:
+            deleted: bool = False) -> Union[list, Pagination]:
         column = getattr(self._model, order_column)
         order_by = getattr(column, order)
         q = self._model.query
@@ -37,8 +42,7 @@ class UserRepository(Repository):
             q = q.filter(or_(self._model.username.like(f'%{search}%'),
                              self._model.email.like(f'%{search}%'),
                              self._model.phone.like(f'%{search}%')))
-        if not with_deleted:
-            q = q.filter_by(deleted_at=None)
+        q = self.deleted_filter(q, deleted)
         q = q.order_by(order_by())
         users = q.paginate(page, per_page=per_page) if paginate else q.all()
         return users
@@ -51,36 +55,32 @@ class UserRepository(Repository):
         return user
 
     def delete(self, id: str, fail: bool = False) -> User:
-        user = self.find(id, fail=fail, with_deleted=True)
+        user = self.find(id, fail=fail, deleted=True)
         self.db_delete(user)
         return user
 
     def find(self, id: str, fail: bool = False,
-             with_deleted: bool = False) -> User:
-        filters: dict[str, Any] = {'id': id}
-        if not with_deleted:
-            filters['deleted_at'] = None
-        q = self._model.query.filter_by(**filters)
+             deleted: bool = False) -> User:
+        q = self._model.query.filter_by(id=id)
+        q = self.deleted_filter(q, deleted)
         user = q.first_or_404() if fail else q.first()
         return user
 
     def find_by_attr(self, column: str, value: str, fail: bool = False,
-                     with_deleted: bool = False) -> User:
+                     deleted: bool = False) -> User:
         q = self._model.query.filter_by(**{column: value})
-        if not with_deleted:
-            q = q.filter_by(deleted_at=None)
+        q = self.deleted_filter(q, deleted)
         user = q.first_or_404() if fail else q.first()
         return user
 
     def find_optional(self, filter: dict[str, Any], fail: bool = False,
-                      with_deleted: bool = False) -> User:
+                      deleted: bool = False) -> User:
         filters = [
             getattr(self._model, key) == val for key,
             val in filter.items()
         ]
         q = self._model.query.filter(or_(*filters))
-        if not with_deleted:
-            q = q.filter_by(deleted_at=None)
+        q = self.deleted_filter(q, deleted)
         user = q.first_or_404() if fail else q.first()
         return user
 
@@ -89,7 +89,7 @@ class UserRepository(Repository):
             id: str,
             clear: bool = False,
             fail: bool = False) -> User:
-        user = self.find(id, fail=fail, with_deleted=clear)
+        user = self.find(id, fail=fail, deleted=clear)
         if (user.deleted_at is None and clear is False) \
                 or (user.deleted_at is not None and clear is True):
             user.soft_delete(clear=clear)

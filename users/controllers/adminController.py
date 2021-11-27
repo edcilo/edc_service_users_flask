@@ -6,7 +6,7 @@ from users.forms import CreateForm, PaginateForm, UpdateForm, UpdatePasswordForm
 from users.forms.form import FormRequest
 from users.helpers.types import response as responseType
 from users.repositories import userRepo
-from users.serializers import UserSerializer
+from users.serializers import UserSerializer, serializer
 
 
 class AdminController():
@@ -16,9 +16,24 @@ class AdminController():
             'paginate': True,
             'search': form.data['q'],
             'order': form.data['order'] or 'desc',
-            'order_column': form.data['order_column'] or 'id',
+            'order_column': form.data['order_column'] or 'created_at',
             'page': form.data['page'] or 1,
             'per_page': form.data['per_page'] or 15,
+        }
+        collection = userRepo.all(**params)
+        serializer = UserSerializer(collection, paginate=True)
+        return jsonify(serializer.get_data()), 200
+
+    @form_validator(PaginateForm, method='GET')
+    def trash(self, form: Type[FormRequest]) -> responseType:
+        params = {
+            'paginate': True,
+            'search': form.data.get('q'),
+            'order': form.data.get('order') or 'desc',
+            'order_column': form.data.get('order_column') or 'created_at',
+            'page': form.data.get('page') or 1,
+            'per_page': form.data.get('per_page') or 15,
+            'deleted': True
         }
         collection = userRepo.all(**params)
         serializer = UserSerializer(collection, paginate=True)

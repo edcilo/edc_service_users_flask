@@ -50,7 +50,7 @@ def test_user_repo_find_by_attr(client):
     user_found = userRepo.find_by_attr('username', 'jhon.doe')
     assert isinstance(user_found, User)
     userRepo.soft_delete(user_found.id)
-    user_found = userRepo.find_by_attr('username', 'jhon.doe', with_deleted=True)
+    user_found = userRepo.find_by_attr('username', 'jhon.doe', deleted=True)
     assert user_found is not None
 
 def test_user_repor_find_optional(client):
@@ -115,6 +115,7 @@ def test_user_repo_delete(client):
         'email': 'jhon.doe@example.com',
         'phone': '1231231231',
         'password': 'secret', })
+    userRepo.soft_delete(user.id)
     userRepo.delete(user.id)
     user = userRepo.find(user.id)
     assert user is None

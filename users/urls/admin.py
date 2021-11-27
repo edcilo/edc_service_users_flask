@@ -7,6 +7,11 @@ def list():
     return adminController.list()
 
 
+@app.route('/admin/trash', methods=['GET'])
+def trash():
+    return adminController.trash()
+
+
 @app.route('/admin', methods=['POST'])
 def create():
     return adminController.create()
