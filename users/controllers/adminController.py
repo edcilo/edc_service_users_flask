@@ -14,11 +14,11 @@ class AdminController():
     def list(self, form: Type[FormRequest]) -> responseType:
         params = {
             'paginate': True,
-            'search': form.data['q'],
-            'order': form.data['order'] or 'desc',
-            'order_column': form.data['order_column'] or 'created_at',
-            'page': form.data['page'] or 1,
-            'per_page': form.data['per_page'] or 15,
+            'search': form.data.get('q'),
+            'order': form.data.get('order') or 'desc',
+            'order_column': form.data.get('order_column') or 'created_at',
+            'page': form.data.get('page') or 1,
+            'per_page': form.data.get('per_page') or 15,
         }
         collection = userRepo.all(**params)
         serializer = UserSerializer(collection, paginate=True)
