@@ -85,8 +85,10 @@ def test_user_repo_update(client):
         'email': 'jhon.doe@example.com',
         'phone': '1231231231',
         'password': 'secret', })
+    updated_at = user.updated_at
     user_updated = userRepo.update(user.id, {'phone': '3213213213'})
     assert user_updated.phone == '3213213213'
+    assert updated_at != user_updated.updated_at
 
 def test_user_repo_update_password(client):
     user = userRepo.add({

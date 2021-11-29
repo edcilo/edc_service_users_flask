@@ -13,6 +13,8 @@ class Repository(abc.ABC):
         pass
 
     def db_save(self, model: Type[Model]) -> None:
+        if callable(getattr(model, 'touch', None)):
+            model.touch()
         db.session.add(model)
         db.session.commit()
 

@@ -1,4 +1,3 @@
-from flask import json
 from fixture import app, client
 from users.helpers.jwt import jwtHelper
 from users.repositories import userRepo
