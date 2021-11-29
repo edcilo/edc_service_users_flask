@@ -14,6 +14,15 @@ def adminuser():
     }
     return userRepo.add(data)
 
+def jhondoe(data={}):
+    placeholder = {
+        'username': 'jhon.doe',
+        'email': 'jhon.doe@example.com',
+        'phone': '1231231231',
+        'password': 'secret',
+    }
+    return userRepo.add(data={**placeholder, **data})
+
 def authtoken(user):
     serializer = JwtSerializer(user)
     return jwtHelper.get_tokens(serializer.get_data())
@@ -43,13 +52,7 @@ def test_user_detail(client):
     admin = adminuser()
     token = authtoken(admin)
     headers = {'Authorization': f"Bearer {token['token']}"}
-    data = {
-        'username': 'jhon.doe',
-        'email': 'jhon.doe@example.com',
-        'phone': '1231231231',
-        'password': 'secret',
-    }
-    user = userRepo.add(data)
+    user = jhondoe()
     res = client.get(f'/admin/{user.id}', headers=headers)
     assert res.status_code == 200
 
@@ -57,13 +60,7 @@ def test_user_update(client):
     admin = adminuser()
     token = authtoken(admin)
     headers = {'Authorization': f"Bearer {token['token']}"}
-    data = {
-        'username': 'jhon.doe',
-        'email': 'jhon.doe@example.com',
-        'phone': '1231231231',
-        'password': 'secret',
-    }
-    user = userRepo.add(data)
+    user = jhondoe()
     new_data = {
         'username': 'jhon.doe',
         'email': 'jhon.doe.00@example.com',
@@ -76,13 +73,7 @@ def test_user_update_password(client):
     admin = adminuser()
     token = authtoken(admin)
     headers = {'Authorization': f"Bearer {token['token']}"}
-    data = {
-        'username': 'jhon.doe',
-        'email': 'jhon.doe@example.com',
-        'phone': '1231231231',
-        'password': 'secret',
-    }
-    user = userRepo.add(data)
+    user = jhondoe()
     data = {
         'password': 'newsecret',
         'password_confirmation': 'newsecret'
@@ -94,13 +85,7 @@ def test_user_activate(client):
     admin = adminuser()
     token = authtoken(admin)
     headers = {'Authorization': f"Bearer {token['token']}"}
-    data = {
-        'username': 'jhon.doe',
-        'email': 'jhon.doe@example.com',
-        'phone': '1231231231',
-        'password': 'secret',
-    }
-    user = userRepo.add(data)
+    user = jhondoe()
     res = client.post(f'/admin/{user.id}/activate', headers=headers)
     assert res.status_code == 204
 
@@ -108,13 +93,7 @@ def test_user_deactivate(client):
     admin = adminuser()
     token = authtoken(admin)
     headers = {'Authorization': f"Bearer {token['token']}"}
-    data = {
-        'username': 'jhon.doe',
-        'email': 'jhon.doe@example.com',
-        'phone': '1231231231',
-        'password': 'secret',
-    }
-    user = userRepo.add(data)
+    user = jhondoe()
     userRepo.activate(user.id)
     res = client.post(f'/admin/{user.id}/deactivate', headers=headers)
     assert res.status_code == 204
@@ -123,13 +102,7 @@ def test_user_soft_delete(client):
     admin = adminuser()
     token = authtoken(admin)
     headers = {'Authorization': f"Bearer {token['token']}"}
-    data = {
-        'username': 'jhon.doe',
-        'email': 'jhon.doe@example.com',
-        'phone': '1231231231',
-        'password': 'secret',
-    }
-    user = userRepo.add(data)
+    user = jhondoe()
     res = client.delete(f'/admin/{user.id}', headers=headers)
     assert res.status_code == 204
 
@@ -137,13 +110,7 @@ def test_user_restore(client):
     admin = adminuser()
     token = authtoken(admin)
     headers = {'Authorization': f"Bearer {token['token']}"}
-    data = {
-        'username': 'jhon.doe',
-        'email': 'jhon.doe@example.com',
-        'phone': '1231231231',
-        'password': 'secret',
-    }
-    user = userRepo.add(data)
+    user = jhondoe()
     userRepo.soft_delete(user.id)
     res = client.post(f'/admin/{user.id}/restore', headers=headers)
     assert res.status_code == 204
@@ -152,13 +119,7 @@ def test_user_delete(client):
     admin = adminuser()
     token = authtoken(admin)
     headers = {'Authorization': f"Bearer {token['token']}"}
-    data = {
-        'username': 'jhon.doe',
-        'email': 'jhon.doe@example.com',
-        'phone': '1231231231',
-        'password': 'secret',
-    }
-    user = userRepo.add(data)
+    user = jhondoe()
     userRepo.soft_delete(user.id)
     res = client.delete(f'/admin/{user.id}/hard', headers=headers)
     assert res.status_code == 204
