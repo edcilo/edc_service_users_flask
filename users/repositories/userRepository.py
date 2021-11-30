@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import Any, Iterable, Optional, Union
 from sqlalchemy import or_
 from flask_sqlalchemy import Pagination
@@ -95,6 +96,13 @@ class UserRepository(Repository):
             user.soft_delete(clear=clear)
             self.db_save(user)
         return user
+
+    def multiple_soft_deletion(self, ids: str, clear: bool = False) -> None:
+        deleted_at = None if clear else datetime.now()
+        self._model.query.filter(self._model.id.in_(ids)).update({
+            'deleted_at': deleted_at
+        })
+        self.db_save()
 
     def update(self,
                id: str,

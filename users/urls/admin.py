@@ -1,12 +1,19 @@
+from flask.json import jsonify
 from users import app
 from users.controllers import adminController
 from users.middlewares import middleware, AuthMiddleware
 
 
-@app.route('/admin')
+@app.route('/admin', methods=['GET'])
 @middleware(AuthMiddleware)
 def list():
     return adminController.list()
+
+
+@app.route('/admin', methods=['POST'])
+@middleware(AuthMiddleware)
+def create():
+    return adminController.create()
 
 
 @app.route('/admin/trash', methods=['GET'])
@@ -15,10 +22,17 @@ def trash():
     return adminController.trash()
 
 
-@app.route('/admin', methods=['POST'])
+@app.route('/admin', methods=['DELETE'])
 @middleware(AuthMiddleware)
-def create():
-    return adminController.create()
+def multiple_soft_deletion():
+    return adminController.multiple_soft_deletion()
+
+
+@app.route('/admin/restore', methods=['POST'])
+@middleware(AuthMiddleware)
+def multiple_restore():
+    print('????')
+    return adminController.multiple_restore()
 
 
 @app.route('/admin/<id>')
@@ -67,3 +81,4 @@ def restore(id):
 @middleware(AuthMiddleware)
 def delete(id):
     return adminController.delete(id)
+

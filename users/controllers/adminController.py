@@ -2,7 +2,13 @@ from typing import Type
 from flask import jsonify
 
 from users.decorators import form_validator
-from users.forms import CreateForm, PaginateForm, UpdateForm, UpdatePasswordForm
+from users.forms import (
+    CreateForm,
+    PaginateForm,
+    UpdateForm,
+    UpdatePasswordForm,
+    MultipleSoftDeletionForm
+)
 from users.forms.form import FormRequest
 from users.helpers.types import response as responseType
 from users.repositories import userRepo
@@ -73,8 +79,18 @@ class AdminController():
         userRepo.soft_delete(id, fail=True)
         return jsonify(), 204
 
+    @form_validator(MultipleSoftDeletionForm)
+    def multiple_soft_deletion(self, form: Type[FormRequest]) -> responseType:
+        userRepo.multiple_soft_deletion(form.data.get('ids'))
+        return jsonify(), 204
+
     def restore(self, id: str) -> responseType:
         userRepo.soft_delete(id, clear=True, fail=True)
+        return jsonify(), 204
+
+    @form_validator(MultipleSoftDeletionForm)
+    def multiple_restore(self, form: Type[FormRequest]) -> responseType:
+        userRepo.multiple_soft_deletion(form.data.get('ids'), clear=True)
         return jsonify(), 204
 
     def delete(self, id: str) -> responseType:

@@ -105,6 +105,15 @@ def test_user_soft_delete(client):
     res = client.delete(f'/admin/{user.id}', headers=headers)
     assert res.status_code == 204
 
+def test_user_multiple_soft_deletion(client):
+    admin = adminuser()
+    token = authtoken(admin)
+    headers = {'Authorization': f"Bearer {token['token']}"}
+    user = jhondoe()
+    data = {'ids': [user.id]}
+    res = client.delete('/admin', data=data, headers=headers)
+    assert res.status_code == 204
+
 def test_user_restore(client):
     admin = adminuser()
     token = authtoken(admin)
@@ -112,6 +121,15 @@ def test_user_restore(client):
     user = jhondoe()
     userRepo.soft_delete(user.id)
     res = client.post(f'/admin/{user.id}/restore', headers=headers)
+    assert res.status_code == 204
+
+def test_user_multiple_restore(client):
+    admin = adminuser()
+    token = authtoken(admin)
+    headers = {'Authorization': f"Bearer {token['token']}"}
+    user = jhondoe()
+    data = {'ids': [user.id]}
+    res = client.post('/admin/restore', data=data, headers=headers)
     assert res.status_code == 204
 
 def test_user_delete(client):
