@@ -141,3 +141,11 @@ def test_user_delete(client):
     res = client.delete(f'/admin/{user.id}/hard', headers=headers)
     assert res.status_code == 204
 
+def test_user_multiple_deletion(client):
+    admin = adminuser()
+    token = authtoken(admin)
+    headers = {'Authorization': f"Bearer {token['token']}"}
+    user = jhondoe()
+    data = {'ids': [user.id]}
+    res = client.delete('/admin/hard', data=data, headers=headers)
+    assert res.status_code == 204

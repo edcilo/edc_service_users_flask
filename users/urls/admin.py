@@ -1,4 +1,3 @@
-from flask.json import jsonify
 from users import app
 from users.controllers import adminController
 from users.middlewares import middleware, AuthMiddleware
@@ -31,8 +30,13 @@ def multiple_soft_deletion():
 @app.route('/admin/restore', methods=['POST'])
 @middleware(AuthMiddleware)
 def multiple_restore():
-    print('????')
     return adminController.multiple_restore()
+
+
+@app.route('/admin/hard', methods=['DELETE'])
+@middleware(AuthMiddleware)
+def multiple_deletion():
+    return adminController.multiple_deletion()
 
 
 @app.route('/admin/<id>')

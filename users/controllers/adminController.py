@@ -96,3 +96,8 @@ class AdminController():
     def delete(self, id: str) -> responseType:
         userRepo.delete(id, fail=True)
         return jsonify({}), 204
+
+    @form_validator(MultipleSoftDeletionForm)
+    def multiple_deletion(self, form: Type[FormRequest]) -> responseType:
+        userRepo.multiple_deletion(form.data.get('ids'))
+        return jsonify(), 204

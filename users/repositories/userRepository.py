@@ -85,6 +85,17 @@ class UserRepository(Repository):
         user = q.first_or_404() if fail else q.first()
         return user
 
+    def multiple_deletion(self, ids: list[str]) -> None:
+        self._model.query.filter(self._model.id.in_(ids)).delete()
+        self.db_save()
+
+    def multiple_soft_deletion(self, ids: list[str], clear: bool = False) -> None:
+        deleted_at = None if clear else datetime.now()
+        self._model.query.filter(self._model.id.in_(ids)).update({
+            'deleted_at': deleted_at
+        })
+        self.db_save()
+
     def soft_delete(
             self,
             id: str,
@@ -96,13 +107,6 @@ class UserRepository(Repository):
             user.soft_delete(clear=clear)
             self.db_save(user)
         return user
-
-    def multiple_soft_deletion(self, ids: str, clear: bool = False) -> None:
-        deleted_at = None if clear else datetime.now()
-        self._model.query.filter(self._model.id.in_(ids)).update({
-            'deleted_at': deleted_at
-        })
-        self.db_save()
 
     def update(self,
                id: str,

@@ -122,4 +122,14 @@ def test_user_repo_delete(client):
     user = userRepo.find(user.id)
     assert user is None
 
+def test_user_repo_miltiple_deletion(client):
+    user = userRepo.add({
+        'username': 'jhon.doe',
+        'email': 'jhon.doe@example.com',
+        'phone': '1231231231',
+        'password': 'secret', })
+    ids = [user.id]
+    userRepo.multiple_deletion(ids)
+    user = userRepo.find(user.id)
+    assert user == None
 
