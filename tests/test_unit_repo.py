@@ -50,7 +50,7 @@ def test_user_repo_find_by_attr(client):
     user_found = userRepo.find_by_attr('username', 'jhon.doe')
     assert isinstance(user_found, User)
     userRepo.soft_delete(user_found.id)
-    user_found = userRepo.find_by_attr('username', 'jhon.doe', with_deleted=True)
+    user_found = userRepo.find_by_attr('username', 'jhon.doe', deleted=True)
     assert user_found is not None
 
 def test_user_repor_find_optional(client):
@@ -85,8 +85,10 @@ def test_user_repo_update(client):
         'email': 'jhon.doe@example.com',
         'phone': '1231231231',
         'password': 'secret', })
+    updated_at = user.updated_at
     user_updated = userRepo.update(user.id, {'phone': '3213213213'})
     assert user_updated.phone == '3213213213'
+    assert updated_at != user_updated.updated_at
 
 def test_user_repo_update_password(client):
     user = userRepo.add({
@@ -115,8 +117,19 @@ def test_user_repo_delete(client):
         'email': 'jhon.doe@example.com',
         'phone': '1231231231',
         'password': 'secret', })
+    userRepo.soft_delete(user.id)
     userRepo.delete(user.id)
     user = userRepo.find(user.id)
     assert user is None
 
+def test_user_repo_miltiple_deletion(client):
+    user = userRepo.add({
+        'username': 'jhon.doe',
+        'email': 'jhon.doe@example.com',
+        'phone': '1231231231',
+        'password': 'secret', })
+    ids = [user.id]
+    userRepo.multiple_deletion(ids)
+    user = userRepo.find(user.id)
+    assert user == None
 

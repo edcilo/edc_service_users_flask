@@ -10,7 +10,6 @@ from wtforms.validators import (
 )
 from users.helpers.regex import password_regex
 from .form import FormRequest
-from .validators.passwordConfirmation import PasswordConfirmation
 
 
 class UpdatePasswordForm(FormRequest):

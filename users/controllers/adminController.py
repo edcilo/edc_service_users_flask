@@ -2,7 +2,13 @@ from typing import Type
 from flask import jsonify
 
 from users.decorators import form_validator
-from users.forms import CreateForm, PaginateForm, UpdateForm, UpdatePasswordForm
+from users.forms import (
+    CreateForm,
+    PaginateForm,
+    UpdateForm,
+    UpdatePasswordForm,
+    MultipleSoftDeletionForm
+)
 from users.forms.form import FormRequest
 from users.helpers.types import response as responseType
 from users.repositories import userRepo
@@ -14,11 +20,26 @@ class AdminController():
     def list(self, form: Type[FormRequest]) -> responseType:
         params = {
             'paginate': True,
-            'search': form.data['q'],
-            'order': form.data['order'] or 'desc',
-            'order_column': form.data['order_column'] or 'id',
-            'page': form.data['page'] or 1,
-            'per_page': form.data['per_page'] or 15,
+            'search': form.data.get('q'),
+            'order': form.data.get('order') or 'desc',
+            'order_column': form.data.get('order_column') or 'created_at',
+            'page': form.data.get('page') or 1,
+            'per_page': form.data.get('per_page') or 15,
+        }
+        collection = userRepo.all(**params)
+        serializer = UserSerializer(collection, paginate=True)
+        return jsonify(serializer.get_data()), 200
+
+    @form_validator(PaginateForm, method='GET')
+    def trash(self, form: Type[FormRequest]) -> responseType:
+        params = {
+            'paginate': True,
+            'search': form.data.get('q'),
+            'order': form.data.get('order') or 'desc',
+            'order_column': form.data.get('order_column') or 'created_at',
+            'page': form.data.get('page') or 1,
+            'per_page': form.data.get('per_page') or 15,
+            'deleted': True
         }
         collection = userRepo.all(**params)
         serializer = UserSerializer(collection, paginate=True)
@@ -58,10 +79,25 @@ class AdminController():
         userRepo.soft_delete(id, fail=True)
         return jsonify(), 204
 
+    @form_validator(MultipleSoftDeletionForm)
+    def multiple_soft_deletion(self, form: Type[FormRequest]) -> responseType:
+        userRepo.multiple_soft_deletion(form.data.get('ids'))
+        return jsonify(), 204
+
     def restore(self, id: str) -> responseType:
         userRepo.soft_delete(id, clear=True, fail=True)
+        return jsonify(), 204
+
+    @form_validator(MultipleSoftDeletionForm)
+    def multiple_restore(self, form: Type[FormRequest]) -> responseType:
+        userRepo.multiple_soft_deletion(form.data.get('ids'), clear=True)
         return jsonify(), 204
 
     def delete(self, id: str) -> responseType:
         userRepo.delete(id, fail=True)
         return jsonify({}), 204
+
+    @form_validator(MultipleSoftDeletionForm)
+    def multiple_deletion(self, form: Type[FormRequest]) -> responseType:
+        userRepo.multiple_deletion(form.data.get('ids'))
+        return jsonify(), 204
